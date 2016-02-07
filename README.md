@@ -1,4 +1,4 @@
-# Android-App-Baseball_Simulator
+# Android Application: Baseball Simulator
 Android Application: Educational Baseball Simulator
 
 Currently on google play called MATH SLUGGER.
