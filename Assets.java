@@ -4,12 +4,9 @@ import com.dorf.framework.Image;
 import com.dorf.framework.Music;
 import com.dorf.framework.Sound;
 
-
- /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	- Class for making static images and sounds.
-
-	  Code by Jordan Marx (2014)
-*/
+/*
+	Variables of all the images and sounds
+ */
 
 public class Assets {
 
@@ -31,6 +28,7 @@ public class Assets {
 	public static Image menuButtonRest, menuButtonClicked;
 	public static Image rightArrowRest, leftArrowRest, rightArrowClicked,
 			leftArrowClicked;
+	public static Image exitImage, yesExitImage, noExitImage;
 
 	// Sounds
 	public static Sound clickPlayButton, homeRunSound;
@@ -40,7 +38,7 @@ public class Assets {
 
 	public static void load(SampleGame sampleGame) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 }

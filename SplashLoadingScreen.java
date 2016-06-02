@@ -5,13 +5,9 @@ import com.dorf.framework.Graphics;
 import com.dorf.framework.Screen;
 import com.dorf.framework.Graphics.ImageFormat;
 
-
- /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	- Class used to display the splash screen asset.
-	- Loads the loading screen.
-
-	  Code by Jordan Marx (2014)
-  */
+/*
+	Used to show company logo
+ */
 
 public class SplashLoadingScreen extends Screen {
 	public SplashLoadingScreen(Game game) {
@@ -21,19 +17,14 @@ public class SplashLoadingScreen extends Screen {
 	@Override
 	public void update(float deltaTime) {
 		Graphics g = game.getGraphics();
-
-		// Loads the splash image
 		Assets.splash = g.newImage("DorfINC.png", ImageFormat.RGB565);
 
-        // Sets the screen to loading screen
 		game.setScreen(new LoadingScreen(game));
 	}
 
 	@Override
 	public void paint(float deltaTime) {
 		Graphics g = game.getGraphics();
-
-		// Draw the splash asset
 		g.drawImage(Assets.splash, 0, 0);
 	}
 

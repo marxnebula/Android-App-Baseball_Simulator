@@ -1,54 +1,33 @@
 package com.dorf.skeleton;
 
 import java.text.DecimalFormat;
+
 import android.graphics.Color;
 import android.graphics.Paint;
 import com.dorf.framework.Graphics;
 
-
- /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	- Draws the stats of max height, max distance, and total time of trajectory
-	  to the gameScreen.
-
-	  Code by Jordan Marx (2014)
-  */
+/*
+	Draws the stats of max height, max distance, and total time of trajectory.
+	Displayed on gameScreen.
+ */
 
 public class DrawStats {
 
-    // Max height
 	private double maxHeight = 0;
-
-	// Max distance
 	private double maxDistance = 0;
-
-	// Total time
 	private double totalTime = 0;
-
-	// Ball park
 	private BallPark ballPark;
-
-	// Field position
 	private String fieldPosition;
-
-	// Earths gravity
 	private double gravity = 9.80665;
-
-	// Earths air density
 	private double densityOfAir = 1.23;
-
-	// Current planet
 	private String currentPlanet = "Earth";
-
-	// Font variables
 	private Paint infoFontTitle;
 	private Paint infoFontData;
 
 
-
-	// Constructor
+	
+	
 	public DrawStats() {
-
-	    // Starting ball park
 		ballPark = new BallPark("Chicago Cubs" ,"Wrigley Field",
 				355, 368, 400, 368, 353, 11, 11, 11);
 
@@ -75,11 +54,11 @@ public class DrawStats {
 		gravity = mathCalculator.getGravity();
 		densityOfAir = mathCalculator.getDensityOfAir();
 
-		// Current planet
+		// Planet
 		currentPlanet = mathCalculator.getCurrentPlanet();
 
-		// Just incase at 0 it doesn't display 3.
-		// It is 3 because the ball thrown is a strike(3 ft above ground)
+		// Sometimes at 0 degrees it doesn't show that the maxHeight is 3 even though
+		// it calculates it at 3
 		if(maxHeight < 3)
 		{
 			maxHeight = 3;
@@ -89,15 +68,15 @@ public class DrawStats {
 	// Draw
 	public void draw(Graphics g, Paint debugFont)
 	{
-		// For displaying 2 decimal places
+		
 		DecimalFormat numberFormat = new DecimalFormat("#.00");
-
+	
 		// Stats inside of box
 		g.drawString(numberFormat.format(maxDistance) + " ft", 83, 640, debugFont);
 		g.drawString(numberFormat.format(maxHeight) + " ft", 216, 640, debugFont);
 		g.drawString(numberFormat.format(totalTime) + " secs", 342, 640, debugFont);
 
-		// Neutron star number too big so had to write it out normally
+		// Neutron star number too big so gonna write it out normally
 		if(currentPlanet == "Neutron Star")
 		{
 			// Draw gravity
@@ -115,14 +94,12 @@ public class DrawStats {
 		g.drawString("Density of Air: ", 3, 780, infoFontTitle);
 		g.drawString((densityOfAir) + " kg/m^3", 80, 780, infoFontData);
 	}
-
-	// Set the ball park
+	
 	public void setBallPark(BallPark bp)
 	{
 		this.ballPark = bp;
 	}
-
-	// Set the field position
+	
 	public void setFieldPosition(String fp)
 	{
 		this.fieldPosition = fp;

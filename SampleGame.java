@@ -9,12 +9,6 @@ import android.util.Log;
 import com.dorf.framework.Screen;
 import com.dorf.framework.implementation.AndroidGame;
 
-/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	- First code that is run.
-	- It sets the initial screen to be the splash screen.
-
-	  Code by Jordan Marx (2014)
-  */
 
 public class SampleGame extends AndroidGame {
 
@@ -24,15 +18,11 @@ public class SampleGame extends AndroidGame {
 	@Override
 	public Screen getInitScreen() {
 
-        // If first time running game
 		if (firstTimeCreate) {
-
-            // Load the assets
 			Assets.load(this);
 			firstTimeCreate = false;
 		}
 
-        // Returns the splash loading screen
 		return new SplashLoadingScreen(this);
 
 	}
@@ -67,13 +57,19 @@ public class SampleGame extends AndroidGame {
 	@Override
 	public void onResume() {
 		super.onResume();
-
+		if (Assets.gameTheme!=(null)) {
+			
+				Assets.gameTheme.stop();
+		}
 
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
+		if (Assets.gameTheme!=(null))
+			Assets.gameTheme.stop();
+			
 
 	}
 
