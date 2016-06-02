@@ -8,72 +8,92 @@ import com.dorf.framework.Image;
 import com.dorf.framework.Input.TouchEvent;
 
 
-/*
-	Draws all the buttons that can be clicked on in the gameScreen class.
-	Includes the stadiums, planets, field position, air resistance, start button,
-	initial velocity, and launch angle.
- */
+
+  /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	- Draws all the buttons that can be clicked on in the gameScreen class.
+	- Includes the stadiums, planets, field position, air resistance, start button,
+	  initial velocity, and launch angle.
+
+	  Code by Jordan Marx (2014)
+   */
 
 public class DrawButtonInterface {
 
-	// Interface buttons
+	// Ball park button
 	private Button ballParkButton;
+
+	// Field position button
 	private Button fieldPositionButton;
+
+	// Initial velocity button
 	private Button initialVelocityPlatform;
+
+	// Launch angle button
 	private Button launchAnglePlatform;
+
+	// Air resistance button
 	private Button airResistanceButton;
+
+	// Start button
 	private Button startButton;
+
+	// Choose planet button
 	private Button whichPlanetButton;
-	
+
 	// Buttons for when clicking on field position
 	private Button[] fieldPositionArrayButton = new Button[5];
-	
-	// Buttons for when clicking on baseball team
+
+	// NL ball park array buttons
 	private Button[] nlBallParkArrayButton = new Button[15];
+
+	// AL ball park array buttons
 	private Button[] alBallParkArrayButton = new Button[15];
-	
-	// Buttons for when clicking on which planet
+
+	// Number of planets(includes celestial objects)
 	private int numberOfPlanets = 15;
+
+	// Buttons for when clicking on which planet
 	private Button[] planetArrayButton = new Button[numberOfPlanets];
-	
+
 	// NL teams
 	private BallPark[] nlBallParks = new BallPark[15];
-	
+
 	// AL teams
 	private BallPark[] alBallParks = new BallPark[15];
+
+	// Current ball park
 	private BallPark currentBallPark;
-	
+
 	// Booleans
 	private boolean ballParkHitBox = false;
 	private boolean fieldPositionHitBox = false;
 	private boolean planetHitBox = false;
-	
-	// Planets
+
+	// Stores planets
 	private String[] planets = new String[numberOfPlanets];
-	
-	
+
+	// Constructor
 	public DrawButtonInterface() {
 
-		// Planets
+		// Adds the planets
 		addPlanets();
-		
-		// Ball Parks
+
+		// Adds the ball Parks
 		addBallParks();
-		
-		
+
 		// Starting ball park
 		currentBallPark = new BallPark("Chicago Cubs" ,"Wrigley Field",
 				355, 368, 400, 368, 353, 11, 11, 11);
-		
-		
+
+
 		// Interface Buttons
-		ballParkButton = new Button(240, 493, Assets.teamStatic, Assets.teamStatic, 
+		ballParkButton = new Button(240, 493, Assets.teamStatic, Assets.teamStatic,
 				15, "Chicago Cubs");
 		ballParkButton.setTextSize(25);
-		fieldPositionButton = new Button(110, 560, Assets.planetFieldStatic, Assets.planetFieldStatic, 
-				17, "Center");	
+		fieldPositionButton = new Button(110, 560, Assets.planetFieldStatic, Assets.planetFieldStatic,
+				17, "Center");
 		fieldPositionButton.setFontBold();
-		whichPlanetButton = new Button(365, 560, Assets.planetFieldStatic, 
+		whichPlanetButton = new Button(365, 560, Assets.planetFieldStatic,
 				Assets.planetFieldStatic, 17, "Earth");
 		whichPlanetButton.setFontBold();
 		airResistanceButton = new Button(240, 561, Assets.checkBox,
@@ -86,22 +106,22 @@ public class DrawButtonInterface {
 				Assets.dragPlatform, Assets.dragPlatform);
 		startButton = new Button(240, 768, Assets.menuButtonRest,
 				Assets.menuButtonRest, 30, "Start");
-		
-		
-		
+
+
+
 		// Buttons for when clicking on field position
-		fieldPositionArrayButton[0] = new Button(110, 421, Assets.planetFieldStatic, Assets.planetFieldStatic, 
+		fieldPositionArrayButton[0] = new Button(110, 421, Assets.planetFieldStatic, Assets.planetFieldStatic,
 				15, "Left Corner");
-		fieldPositionArrayButton[1] = new Button(110, 457, Assets.planetFieldStatic, Assets.planetFieldStatic, 
+		fieldPositionArrayButton[1] = new Button(110, 457, Assets.planetFieldStatic, Assets.planetFieldStatic,
 				15, "Left Center");
-		fieldPositionArrayButton[2] = new Button(110, 493, Assets.planetFieldStatic, Assets.planetFieldStatic, 
+		fieldPositionArrayButton[2] = new Button(110, 493, Assets.planetFieldStatic, Assets.planetFieldStatic,
 				15, "Center");
-		fieldPositionArrayButton[3] = new Button(110, 529, Assets.planetFieldStatic, Assets.planetFieldStatic, 
+		fieldPositionArrayButton[3] = new Button(110, 529, Assets.planetFieldStatic, Assets.planetFieldStatic,
 				15, "Right Corner");
-		fieldPositionArrayButton[4] = new Button(110, 565, Assets.planetFieldStatic, Assets.planetFieldStatic, 
+		fieldPositionArrayButton[4] = new Button(110, 565, Assets.planetFieldStatic, Assets.planetFieldStatic,
 				15, "Right Center");
-		
-		
+
+
 		// Buttons for when clicking on baseball team
 		for(int i = 0; i < 15; i++)
 		{
@@ -113,62 +133,62 @@ public class DrawButtonInterface {
 			alBallParkArrayButton[j] = new Button(147 + 200, 122 + (36 * j), Assets.clickedImage2, Assets.clickedImage2,
 					15, alBallParks[j].getTeamName());
 		}
-		
+
 		// Buttons for when clicking on which planet
 		for(int i = 0; i < numberOfPlanets; i++)
 		{
 			planetArrayButton[i] = new Button(365, 60 + (36 * i), Assets.planetFieldStatic, Assets.planetFieldStatic,
 					15, planets[i]);
 		}
-		
-		
-		
+
+
+
 	}
-	
+
 	// Draw
 	public void draw(Graphics g, int xVelocity, int xLaunchAngle, int startingDragPos, double dragVConvert,
 			double dragLAConvert, Paint debugFont)
 	{
-		// Ball Park
+		// Draw ball Park
 		ballParkButton.draw(g);
-		
-		//Field position
+
+		//draw field position
 		fieldPositionButton.draw(g);
-		
-		// Initial Velocity
+
+		// Draw Initial Velocity platform
 		initialVelocityPlatform.draw(g);
 		g.drawImage(Assets.dragButton, xVelocity, 688 - 12);
 		double xV = (xVelocity - startingDragPos) * dragVConvert;
 		g.drawString(Integer.toString((int)xV) + " mph", initialVelocityPlatform.getCenterX() + 278,
 				initialVelocityPlatform.getCenterY() + 17, debugFont);
-		
-		// Lanuch Angle
+
+		// Draw Lanuch Angle platform
 		launchAnglePlatform.draw(g);
 		g.drawImage(Assets.dragButton, xLaunchAngle, 721 - 12);
 		double xLA = (xLaunchAngle - startingDragPos) * dragLAConvert;
 		g.drawString(Integer.toString((int)xLA) + " degs", launchAnglePlatform.getCenterX() + 278,
 				launchAnglePlatform.getCenterY() + 17, debugFont);
-		
-		// Air Resistance
+
+		// Draw Air Resistance
 		airResistanceButton.draw(g);
-		
-		// Start Button
+
+		// Draw Start Button
 		startButton.draw(g);
-		
-		// Planet Button
+
+		// Draw Select Planet Button
 		whichPlanetButton.draw(g);
-		
-		// Which planet
+
+		// If planet hit box clicked
 		if(planetHitBox)
 		{
-			// P for planet
+			// Display the planets to choose from
 			for(int p = 0; p < numberOfPlanets; p++)
 			{
 				planetArrayButton[p].draw(g);
 			}
 		}
-		
-		
+
+
 		// If you are selecting the team
 		if(ballParkHitBox)
 		{
@@ -179,8 +199,8 @@ public class DrawButtonInterface {
 				alBallParkArrayButton[i].draw(g);
 			}
 		}
-		
-		
+
+
 		// If you are selecting the field position(center, left corner, etc)
 		if(fieldPositionHitBox)
 		{
@@ -189,7 +209,7 @@ public class DrawButtonInterface {
 				fieldPositionArrayButton[i].draw(g);
 			}
 		}
-		
+
 	}
 
 	// Create all the planets in string form!
@@ -211,7 +231,7 @@ public class DrawButtonInterface {
 		planets[13] = "Sun";
 		planets[14] = "Neutron Star";
 	}
-	
+
 	// All info for each ball park
 	// 15 NL and 15 AL
 	private void addBallParks()
@@ -249,13 +269,13 @@ public class DrawButtonInterface {
 				336, 375, 400, 375, 335, 8, 8, 8);
 		nlBallParks[14] = new BallPark("Washington Nationals" ,"Nationals Park",
 				337, 377, 402, 370, 335, 12, 8, 8);
-		
+
 		// AL
 		// Team name, ball park name, left corner, left center, center, right center, right corner
 		// fence height center, fence height right, fence height left
 		alBallParks[0] = new BallPark("Baltimore Orioles" ,"Oriole Park at Camden Yards",
 				333, 364, 400, 373, 318, 7, 25, 7);
-		alBallParks[1] = new BallPark("Boston Red Sox" ,"Fenway Park", 
+		alBallParks[1] = new BallPark("Boston Red Sox" ,"Fenway Park",
 				310, 379, 390, 380, 302, 17, 5, 37);
 		alBallParks[2] = new BallPark("Chicago White Sox" ,"US Cellular Field",
 				330, 375, 400, 375, 335, 8, 8, 8);
@@ -284,12 +304,13 @@ public class DrawButtonInterface {
 		alBallParks[14] = new BallPark("Toronto Blue Jays" ,"Rogers Centre",
 				328, 375, 400, 375, 328, 10, 10, 10);
 	}
-	
+
 	// When field position menu screen pops up this determines which one you clicked
 	public void fieldPositionTouchEvents(TouchEvent event)
 	{
 		for(int i = 0; i < 5; i++)
 		{
+		    // Which ever field position you clicked set the text
 			if(fieldPositionArrayButton[i].touchEvent(event))
 			{
 				fieldPositionButton.setText(fieldPositionArrayButton[i].getString());
@@ -298,34 +319,42 @@ public class DrawButtonInterface {
 			}
 		}
 	}
-	
+
 	// When ball park menu screen pops up this determines which one you clicked
 	public void ballParkTouchEvents(TouchEvent event)
 	{
 		for(int i = 0; i < 15; i++)
 		{
+		    // Which ever nl ball park you clicked display the name and set current park
 			if(nlBallParkArrayButton[i].touchEvent(event))
 			{
 				ballParkButton.setText(nlBallParkArrayButton[i].getString());
 				setCurrentBallPark(nlBallParks[i]);
 				setBallParkHitBox(false);
+
+				// Break loop
 				return;
 			}
+			// Which ever al ball park you clicked display the name and set current park
 			if(alBallParkArrayButton[i].touchEvent(event))
 			{
 				ballParkButton.setText(alBallParkArrayButton[i].getString());
 				setCurrentBallPark(alBallParks[i]);
 				setBallParkHitBox(false);
+
+				// Break loop
 				return;
 			}
 		}
 	}
-	
+
+	// Touch event for the planets
 	public void planetTouchEvents(TouchEvent event)
 	{
-		// P for planet
+		// P for planet!
 		for(int p = 0; p < numberOfPlanets; p++)
 		{
+		    // Which ever planet is clicked then set text
 			if(planetArrayButton[p].touchEvent(event))
 			{
 				whichPlanetButton.setText(planetArrayButton[p].getString());
@@ -334,99 +363,117 @@ public class DrawButtonInterface {
 			}
 		}
 	}
-	
+
+	// Sets the Chicago Cubs as initial ball park.
 	// Might make this random team in future
 	public void setInitialBallPark(BallPark bp)
 	{
 		bp = new BallPark("Chicago Cubs" ,"Wrigley Field",
 				355, 368, 400, 368, 353, 11, 11, 11);
 	}
-	
+
+	// Gets the ball park button
 	public Button getBallParkButton()
 	{
 		return this.ballParkButton;
 	}
-	
+
+	// Gets the field position button
 	public Button getFieldPositionButton()
 	{
 		return this.fieldPositionButton;
 	}
-	
+
+	// Gets the initial velocity button
 	public Button getInitialVelocityPlatform()
 	{
 		return this.initialVelocityPlatform;
 	}
-	
+
+	// Gets the launch angle button
 	public Button getLaunchAnglePlatform()
 	{
 		return this.launchAnglePlatform;
 	}
-	
+
+	// Gets the air resistance button
 	public Button getAirResistanceButton()
 	{
 		return this.airResistanceButton;
 	}
-	
+
+	// Gets the start button
 	public Button getStartButton()
 	{
 		return this.startButton;
 	}
-	
+
+	// Gets the planet button
 	public Button getPlanetButton()
 	{
 		return this.whichPlanetButton;
 	}
-	
+
+	// Sets the text for the air resistance button
 	public void setAirResistanceButtonText(String string)
 	{
 		airResistanceButton.setText(string);
 	}
-	
+
+	// Gets the ball park hit box
 	public boolean getBallParkHitBox()
 	{
 		return this.ballParkHitBox;
 	}
-	
+
+	// Sets the ball park hit box
 	public void setBallParkHitBox(boolean x)
 	{
 		this.ballParkHitBox = x;
 	}
-	
+
+	// Gets the field position hit box
 	public boolean getFieldPositionHitBox()
 	{
 		return this.fieldPositionHitBox;
 	}
-	
+
+	// Sets the field position hit box
 	public void setFieldPositionHitBox(boolean x)
 	{
 		this.fieldPositionHitBox = x;
 	}
-	
+
+	// Sets the current balll park
 	public void setCurrentBallPark(BallPark bp)
 	{
 		this.currentBallPark = bp;
 	}
-	
+
+	// Gets the current ball park
 	public BallPark getCurrentBallPark()
 	{
 		return this.currentBallPark;
 	}
-	
+
+	// Gets the planet hit box
 	public boolean getPlanetHitBox()
 	{
 		return this.planetHitBox;
 	}
-	
+
+	// Sets the planet hit box
 	public void setPlanetHitBox(boolean x)
 	{
 		this.planetHitBox = x;
 	}
-	
+
+	// Gets the planet string name at position i
 	public String getPlanetStringName(int i)
 	{
 		return this.planets[i];
 	}
-	
-	
+
+
 
 }

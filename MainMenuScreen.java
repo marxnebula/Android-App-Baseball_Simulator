@@ -19,32 +19,53 @@ import com.dorf.framework.Input.TouchEvent;
 import com.dorf.framework.Sound;
 import com.dorf.framework.implementation.AndroidMusic;
 
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	- This is the main menu screen code.
+	- It plays music while the user can select Play or About.
+	- Play takes you to the game screen class.
+	- About displays information about the game and who made it.
+
+	  Code by Jordan Marx (2014)
+  */
+
 public class MainMenuScreen extends Screen {
 
-	// Buttons
+	// Start button
 	private Button startButton = new Button(238, 623, Assets.playBall,
 			Assets.playBall, 30, "");
+
+    // About button
 	private Button aboutButton = new Button(238, 719, Assets.aboutButton,
 			Assets.aboutButton, 30, "");
+
+    // Back button
 	private Button backButton = new Button(234, 694, Assets.backImage,
 			Assets.backImage, 30, "");
-	private Button exitYesButton = new Button(180, 425, Assets.yesExitImage,
+
+    // Exit buttons
+    private Button exitYesButton = new Button(180, 425, Assets.yesExitImage,
 			Assets.yesExitImage, 30, "");
 	private Button exitNoButton = new Button(296, 425, Assets.noExitImage,
 			Assets.noExitImage, 30, "");
 
-	// Sound effect
+	// Sound effects and music
 	private Sound clickPlayBall = Assets.clickPlayButton;
 	private Music mainMenuMusic = Assets.gameTheme;
 	private MediaPlayer mp;
 
-	// Animation and current images
+	// Sign animation
 	private Animation signAnimation;
 	private Image currentSignSprite;
+
+	// Play animation
 	private Animation playButtonAnimation;
 	private Image currentPlayButtonSprite;
+
+	// About animation
 	private Animation aboutButtonAnimation;
 	private Image currentAboutButtonSprite;
+
+	// Back animation
 	private Animation backButtonAnimation;
 	private Image currentBackButtonSprite;
 
@@ -53,18 +74,19 @@ public class MainMenuScreen extends Screen {
 	private boolean aboutPressed = false;
 	private boolean previousAboutPressed = false;
 	private boolean playMusicOnce = true;
-	private boolean isExit = false;
+    private boolean isExit = false;
+
 
 	public MainMenuScreen(Game game) {
 		super(game);
 
-	//	mp = MediaPlayer.create(this, R.raw.main);
-
-		// Button color
+		// Set start button rest color
 		startButton.setRestColor(Color.WHITE);
+
+		// Set about button rest color
 		aboutButton.setRestColor(Color.WHITE);
 
-		// Boolean set
+		// Set booleans
 		startPressed = false;
 		playMusicOnce = true;
 
@@ -111,30 +133,39 @@ public class MainMenuScreen extends Screen {
 	@Override
 	public void update(float deltaTime) {
 		Graphics g = game.getGraphics();
+
+		// Get all touch events
 		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
+
 		int len = touchEvents.size();
 		for (int i = 0; i < len; i++) {
 			TouchEvent event = touchEvents.get(i);
-			if (event.type == TouchEvent.TOUCH_UP) 
+
+			// If touch event is up
+			if (event.type == TouchEvent.TOUCH_UP)
 			{
-				// If you haven't pressed the back button
+			    // If you haven't pressed the back button
 				if(!isExit) {
+                    // If start button pressed and about not pressed
+                    if(startButton.touchEvent(event) && !aboutPressed)
+                    {
+                        // Start game boolean is true
+                        startPressed = true;
+                    }
 
-					// Play button
-					if (startButton.touchEvent(event) && !aboutPressed) {
-						// Start game boolean
-						startPressed = true;
-					}
+                    // If about button pressed
+                    if(aboutButton.touchEvent(event))
+                    {
+                        // Set about pressed to true
+                        aboutPressed = true;
+                    }
 
-					// About button
-					if (aboutButton.touchEvent(event)) {
-						aboutPressed = true;
-					}
-
-					// Back button
-					if (backButton.touchEvent(event) && previousAboutPressed) {
-						aboutPressed = false;
-					}
+                    // If back button pressed and previous about button pressed is flse
+                    if(backButton.touchEvent(event) && previousAboutPressed)
+                    {
+                        // Set about pressed is false
+                        aboutPressed = false;
+                    }
 				}
 
 				// Yes button
@@ -152,7 +183,7 @@ public class MainMenuScreen extends Screen {
 				}
 			}
 		}
-		
+
 		// Get current sign image and update animation
 		currentSignSprite = signAnimation.getImage();
 		signAnimation.update((long)deltaTime);
@@ -169,15 +200,14 @@ public class MainMenuScreen extends Screen {
 		currentBackButtonSprite = backButtonAnimation.getImage();
 		backButtonAnimation.update((long)deltaTime);
 
-		
+
 		// Previous booleans
 		previousAboutPressed = aboutPressed;
 
-		// This was not working in the initialize step so I put it in update
-		// If you set loop to true it plays music twice... why?
+		// Play the music only once
 		if(playMusicOnce)
 		{
-			this.mainMenuMusic.play();
+			mainMenuMusic.play();
 			playMusicOnce = false;
 		}
 
@@ -206,24 +236,36 @@ public class MainMenuScreen extends Screen {
 	@Override
 	public void paint(float deltaTime) {
 		Graphics g = game.getGraphics();
+
+		// Draw the background
 		g.drawImage(Assets.menuBackground1, 0, 0);
+
+		// Draw the current sign
 		g.drawImage(currentSignSprite, 24, 3);
+
+		// Draw the about button
 		aboutButton.draw(g, currentAboutButtonSprite);
+
+		// Draw the start button
 		startButton.draw(g, currentPlayButtonSprite);
-		
+
+		// If about is pressed
 		if(aboutPressed)
 		{
+		    // Draw about image
 			g.drawImage(Assets.aboutImage, 32, 275);
+
+			// Draw the back button
 			backButton.draw(g, currentBackButtonSprite);
 		}
 
+		// If back button pressed
 		if(isExit)
 		{
 			g.drawImage(Assets.exitImage, 115, 250);
 			exitYesButton.draw(g, Assets.yesExitImage);
 			exitNoButton.draw(g, Assets.noExitImage);
 		}
-
 	}
 
 	@Override
@@ -237,23 +279,16 @@ public class MainMenuScreen extends Screen {
 
 	}
 
-	@Override
-	public void dispose() {
-
-	}
 
 	@Override
 	public void backButton() {
-		// Are you sure you want to quit?
-
 		//android.os.Process.killProcess(android.os.Process.myPid());
 		isExit = true;
 
 	}
 
+    // Call garbage collector to clean up memory.
 	private void nullify() {
-
-		// Call garbage collector to clean up memory.
 		System.gc();
 
 	}

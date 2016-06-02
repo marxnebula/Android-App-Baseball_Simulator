@@ -15,57 +15,79 @@ import com.dorf.framework.MathHelper;
 import com.dorf.framework.Screen;
 import com.dorf.framework.Sound;
 
+ /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	- This is the game screen code.
+	- The art displayed is an imitation of wriglet field old school sign.
+	- Displayed is the trajectory of the graph and all its buttons.
+
+	  Code by Jordan Marx (2014)
+  */
+
 public class GameScreen extends Screen {
+
+    // enum of game state
 	enum GameState {
 		Ready, Calculating, Paused, GameOver, Options
 	}
 
 	// The starting gamestate
 	GameState state = GameState.Ready;
-	
+
 	// Text size of all buttons
 	float textSize = 30;
 
-	// Debug info on or off
+	// Boolean for air resitane hit box
 	private boolean airResistanceHitBox = true;
+
+	// Previous booleans
 	private boolean previousBooleanFieldPosition = false;
 	private boolean previousBooleanBallPark = false;
 	private boolean previousBooleanPlanet = false;
-	
-	// Button variables
-	public int startingDragButtonPosition = 125; //122
+
+	// Starting drag button position
+	public int startingDragButtonPosition = 125;
+
+	// Store the starting drag button position
 	public int dragPosXInitialVelocity = startingDragButtonPosition;
 	public int dragPosXLaunchAngle = startingDragButtonPosition;
-	public double dragVelocityConvert = .844; // converts mph per pixels (.844)
-	public double dragLaunchAngleConvert = .379; // converts degs per pixels (.379)
 
-	// Buttons
+	// Converts mph per pixels (.844)
+	public double dragVelocityConvert = .844;
+
+	// Converts degs per pixels (.379)
+	public double dragLaunchAngleConvert = .379;
+
+	// Info button
 	public Button infoButton = new Button(440, 770, Assets.gameInfoBox,
 			Assets.gameInfoBox, 30, "");
+
+    // Back button
 	private Button backButton = new Button(234, 624, Assets.backImage,
 			Assets.backImage, 30, "");
-	private Button exitYesButton = new Button(180, 425, Assets.yesExitImage,
+
+    // Exit buttons
+    private Button exitYesButton = new Button(180, 425, Assets.yesExitImage,
 			Assets.yesExitImage, 30, "");
 	private Button exitNoButton = new Button(296, 425, Assets.noExitImage,
 			Assets.noExitImage, 30, "");
 
-	// Music variables
+	// Music
 	public Sound homeRunSound = Assets.homeRunSound;
 
 	// Boolean variables
-	private Boolean homerun = false;
-	private Boolean playOnce = true;
-	private Boolean infoPressed = false;
-	private Boolean previousAboutPressed = false;
-	private Boolean isStartCanBePressed = true;
-	private boolean isExit = false;
+	private boolean homerun = false;
+	private boolean playOnce = true;
+	private boolean infoPressed = false;
+	private boolean previousAboutPressed = false;
+	private boolean isStartCanBePressed = true;
+    private boolean isExit = false;
 
 	// Info animation stuff
 	private Animation infoButtonAnimation;
 	private Image currentInfoButtonSprite;
 	private Animation backButtonAnimation;
 	private Image currentBackButtonSprite;
-	
+
 
 	// ==============================================================================================
 	// MAIN GAME objects
@@ -84,26 +106,27 @@ public class GameScreen extends Screen {
 	private DrawButtonInterface drawButtonInterface;
 	private BallPark selectedBallPark;
 	private static Background background1, background2;
-	
+
 	// Animations
 	private Animation homeRunAnimation;
-	
-	// Font stuff
+
+	// Font
 	Paint debugFont;
 
 	// ==============================================================================================
 	// MENU OBJECTS
 	// ==============================================================================================
 
-	
+
 	// Rect
 	private final Rect screenBox = new Rect(0, 0, 800, 480);
 
 
-	// Load all the shit first
+	// Load all the variables first
 	public GameScreen(Game game) {
 		super(game);
 
+        // Set booleans
 		homerun = false;
 		playOnce = false;
 
@@ -119,33 +142,32 @@ public class GameScreen extends Screen {
 		backButtonAnimation.addFrame(Assets.backImage, 60);
 		currentBackButtonSprite = Assets.backImage;
 
-		
 		// Drag Buttons
 		dragPlatform = Assets.dragPlatform;
 		dragButton = Assets.dragButton;
-		
+
 		// XY Graph Box
 		xyGraphBox = Assets.xyGraphBox;
 
-		// Init
+		// Background
 		background1 = new Background(0, 0, -3, 2160, 800);
 		background2 = new Background(0, 0, -0.5, 2400, 800);
-		
+
 		// Math class
 		mathCalculator = new MathCalculator();
-		
+
 		// Graph XY class
 		drawXYGraph = new DrawXYGraph();
-		
+
 		// Stats after trajectory
 		drawStats = new DrawStats();
-		
+
 		// Draw buttons
 		drawButtonInterface = new DrawButtonInterface();
-		
+
 		// Initialize ball park
 		drawButtonInterface.setInitialBallPark(selectedBallPark);
-		
+
 		// Animation
 		int animTime = 40;
 		homeRunAnimation = new Animation();
@@ -153,7 +175,7 @@ public class GameScreen extends Screen {
 		homeRunAnimation.addFrame(Assets.homeRunSign3, animTime);
 		homeRunAnimation.addFrame(Assets.homeRunSign4, animTime);
 		currentSignSprite = Assets.homeRunSign;
-		
+
 
 		// Debug font stuff
 		debugFont = new Paint();
@@ -166,28 +188,34 @@ public class GameScreen extends Screen {
 
 	@Override
 	public void update(float deltaTime) {
+
+	    // Gets the touch events
 		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
-		
+
 		// Update clouds
 		background2.update();
 
-		// Update info box
+		// Update info button
 		currentInfoButtonSprite = infoButtonAnimation.getImage();
 		infoButtonAnimation.update((long)deltaTime);
+
+		// Update back button
 		currentBackButtonSprite = backButtonAnimation.getImage();
 		backButtonAnimation.update((long)deltaTime);
 
 
-		// Game states
+		// If game state is ready
 		if (state == GameState.Ready)
 		{
 			updateReady(touchEvents, deltaTime);
 		}
+		// If game state is calculating
 		if (state == GameState.Calculating)
 		{
 			updateCalculating(touchEvents, deltaTime);
 		}
 	}
+
 
 	// Update when not calculating graph stuff
 	private void updateReady(List<TouchEvent> touchEvents, float deltaTime) {
@@ -213,85 +241,100 @@ public class GameScreen extends Screen {
 			homeRunSound.play(1);
 		}
 
-		// 1. All touch input is handled here:
+		// All touch input is handled here
 		int len = touchEvents.size();
 		if (len > 0) {
 			for (int i = 0; i < len; i++) {
 				TouchEvent event = touchEvents.get(i);
-				
+
+				// If the touch event is up
 				if (event.type == TouchEvent.TOUCH_UP) {
 
-					// If you haven't pressed the back button
+                    // If you haven't pressed the back button
 					if(!isExit) {
 
-						// Start button
-						if (drawButtonInterface.getStartButton().touchEvent(event) && isStartCanBePressed) {
-							state = GameState.Calculating;
-							playOnce = true;
-							isStartCanBePressed = false;
-						}
+                        // Start button
+                        if(drawButtonInterface.getStartButton().touchEvent(event) && isStartCanBePressed)
+                        {
+                            state = GameState.Calculating;
+                            playOnce = true;
+                            isStartCanBePressed = false;
+                        }
 
-						// Info button
-						if (infoButton.touchEvent(event)) {
-							infoPressed = !infoPressed;
-						}
+                        // Info button
+                        if(infoButton.touchEvent(event))
+                        {
+                            infoPressed = !infoPressed;
+                        }
 
-						if (backButton.touchEvent(event) && previousAboutPressed) {
-							infoPressed = !infoPressed;
-						}
+                        // Back button
+                        if(backButton.touchEvent(event) && previousAboutPressed)
+                        {
+                            infoPressed = !infoPressed;
+                        }
 
-						// Choose team button
-						if (drawButtonInterface.getBallParkButton().touchEvent(event)
-								&& !drawButtonInterface.getBallParkHitBox()
-								&& !drawButtonInterface.getFieldPositionHitBox()
-								&& !drawButtonInterface.getPlanetHitBox()) {
-							drawButtonInterface.setBallParkHitBox(true);
-							isStartCanBePressed = true;
-						}
-						if (drawButtonInterface.getBallParkHitBox()
-								&& previousBooleanBallPark) {
-							drawButtonInterface.ballParkTouchEvents(event);
-							isStartCanBePressed = true;
-						}
-
-
-						// Spawns the field position box
-						if (drawButtonInterface.getFieldPositionButton().touchEvent(event)
-								&& !drawButtonInterface.getFieldPositionHitBox()) {
-							drawButtonInterface.setFieldPositionHitBox(true);
-							isStartCanBePressed = true;
-						}
-						if (drawButtonInterface.getFieldPositionHitBox()
-								&& previousBooleanFieldPosition) {
-							drawButtonInterface.fieldPositionTouchEvents(event);
-							isStartCanBePressed = true;
-						}
-
-						// Choose planet
-						if (drawButtonInterface.getPlanetButton().touchEvent(event)
-								&& !drawButtonInterface.getPlanetHitBox()) {
-							drawButtonInterface.setPlanetHitBox(true);
-							isStartCanBePressed = true;
-						}
-						if (drawButtonInterface.getPlanetHitBox()
-								&& previousBooleanPlanet) {
-							drawButtonInterface.planetTouchEvents(event);
-							isStartCanBePressed = true;
-						}
+                        // Choose team button
+                        if(drawButtonInterface.getBallParkButton().touchEvent(event)
+                                && !drawButtonInterface.getBallParkHitBox()
+                                && !drawButtonInterface.getFieldPositionHitBox()
+                                && !drawButtonInterface.getPlanetHitBox())
+                        {
+                            drawButtonInterface.setBallParkHitBox(true);
+                            isStartCanBePressed = true;
+                        }
+                        if(drawButtonInterface.getBallParkHitBox()
+                                && previousBooleanBallPark)
+                        {
+                            drawButtonInterface.ballParkTouchEvents(event);
+                            isStartCanBePressed = true;
+                        }
 
 
-						// Air resistance button
-						if (drawButtonInterface.getAirResistanceButton().touchEvent(event)) {
-							isStartCanBePressed = true;
+                        // Spawns the field position box
+                        if(drawButtonInterface.getFieldPositionButton().touchEvent(event)
+                                && !drawButtonInterface.getFieldPositionHitBox())
+                        {
+                            drawButtonInterface.setFieldPositionHitBox(true);
+                            isStartCanBePressed = true;
+                        }
+                        if(drawButtonInterface.getFieldPositionHitBox()
+                                && previousBooleanFieldPosition)
+                        {
+                            drawButtonInterface.fieldPositionTouchEvents(event);
+                            isStartCanBePressed = true;
+                        }
 
-							if (airResistanceHitBox) {
-								drawButtonInterface.setAirResistanceButtonText("Off");
-								airResistanceHitBox = false;
-							} else {
-								drawButtonInterface.setAirResistanceButtonText("On");
-								airResistanceHitBox = true;
-							}
-						}
+                        // Choose planet
+                        if(drawButtonInterface.getPlanetButton().touchEvent(event)
+                                && !drawButtonInterface.getPlanetHitBox())
+                        {
+                            drawButtonInterface.setPlanetHitBox(true);
+                            isStartCanBePressed = true;
+                        }
+                        if(drawButtonInterface.getPlanetHitBox()
+                                && previousBooleanPlanet)
+                        {
+                            drawButtonInterface.planetTouchEvents(event);
+                            isStartCanBePressed = true;
+                        }
+
+
+                        // Air resistance button
+                        if(drawButtonInterface.getAirResistanceButton().touchEvent(event))
+                        {
+                            isStartCanBePressed = true;
+
+                            if(airResistanceHitBox)
+                            {
+                                drawButtonInterface.setAirResistanceButtonText("Off");
+                                airResistanceHitBox = false;
+                            }
+                            else
+                            {
+                                drawButtonInterface.setAirResistanceButtonText("On");
+                                airResistanceHitBox = true;
+                            }
+                        }
 					}
 
 					// Yes button
@@ -308,58 +351,77 @@ public class GameScreen extends Screen {
 						isExit = false;
 					}
 
+
 				}
+
+				// If the touch event is dragged
 				if (event.type == TouchEvent.TOUCH_DRAGGED) {
 
-					// If you haven't pressed the back button
+                    // If you haven't pressed the back button
 					if(!isExit) {
+                        // Velocity position
+                        if(drawButtonInterface.getInitialVelocityPlatform().touchEvent(event))
+                        {
+                            dragPosXInitialVelocity = event.x;
+                            isStartCanBePressed = true;
 
-						// Velocity position
-						if (drawButtonInterface.getInitialVelocityPlatform().touchEvent(event)) {
-							dragPosXInitialVelocity = event.x;
-							isStartCanBePressed = true;
+                            // Limit how far you can drag the ball for velocity
+                            if(dragPosXInitialVelocity <= 123)
+                            {
+                                dragPosXInitialVelocity = startingDragButtonPosition;
+                            }
 
-							// Limit how far you can drag the ball for velocity
-							if (dragPosXInitialVelocity <= 123) {
-								dragPosXInitialVelocity = startingDragButtonPosition;
-							}
-							if (dragPosXInitialVelocity >= 360) {
-								dragPosXInitialVelocity = 360;
-							}
+                            // Can't go above 360
+                            if(dragPosXInitialVelocity >= 360)
+                            {
+                                dragPosXInitialVelocity = 360;
+                            }
 
-						}
+                        }
 
-						// Lanuch Angle position
-						if (drawButtonInterface.getLaunchAnglePlatform().touchEvent(event)) {
-							dragPosXLaunchAngle = event.x;
-							isStartCanBePressed = true;
+                        // Lanuch Angle position
+                        if(drawButtonInterface.getLaunchAnglePlatform().touchEvent(event))
+                        {
+                            dragPosXLaunchAngle = event.x;
+                            isStartCanBePressed = true;
 
-							// Limit how far you can drag the ball for launch angle
-							if (dragPosXLaunchAngle <= 123) {
-								dragPosXLaunchAngle = startingDragButtonPosition;
-							}
-							if (dragPosXLaunchAngle >= 360) {
-								dragPosXLaunchAngle = 360;
-							}
-						}
-					}
+                            // Limit how far you can drag the ball for launch angle
+                            if(dragPosXLaunchAngle <= 123)
+                            {
+                                dragPosXLaunchAngle = startingDragButtonPosition;
+                            }
+
+                            // Can't go above 360
+                            if(dragPosXLaunchAngle >= 360)
+                            {
+                                dragPosXLaunchAngle = 360;
+                            }
+                        }
+
+                    }
 				}
 			}
-			
-			// Random Shit
+
+			// Set ball park for draw xy graph
 			drawXYGraph.setBallPark(drawButtonInterface.getCurrentBallPark());
+
+			// Set field position for draw xy graph
 			drawXYGraph.setFieldPosition(drawButtonInterface.getFieldPositionButton().getString());
+
+			// Set the ball park for draw stats
 			drawStats.setBallPark(drawButtonInterface.getCurrentBallPark());
+
+			// Set the field position for draw stats
 			drawStats.setFieldPosition(drawButtonInterface.getFieldPositionButton().getString());
-			
-			// Booleans
+
+			// Booleans for storing previous
 			previousBooleanFieldPosition = drawButtonInterface.getFieldPositionHitBox();
 			previousBooleanBallPark = drawButtonInterface.getBallParkHitBox();
 			previousBooleanPlanet = drawButtonInterface.getPlanetHitBox();
 			previousAboutPressed = infoPressed;
-			
+
 		}
-		
+
 
 
 	}
@@ -367,24 +429,26 @@ public class GameScreen extends Screen {
 
 	// Update when calculating the graph to be displayed
 	private void updateCalculating(List<TouchEvent> touchEvents, float deltaTime) {
-		
+
 		// Update scoreboard background
 		background1.update();
+
+		// Make sure it doesn't move
 		background1.setBackgroundX(0);
-		
+
 		// Update Math
 		// These need to be sent in as a int
 		mathCalculator.update((int) ((dragPosXInitialVelocity - startingDragButtonPosition) * dragVelocityConvert),
 				(int) ((dragPosXLaunchAngle - startingDragButtonPosition) * dragLaunchAngleConvert),
 				airResistanceHitBox, drawButtonInterface);
-		
+
 		// Updates XY graph
 		drawXYGraph.update(mathCalculator.getXPosList(), mathCalculator.getYPosList(),
 				mathCalculator.getTimeList(), mathCalculator.getMaxHeight(), mathCalculator);
 
 		// Update final stats to be displayed
 		drawStats.update(mathCalculator);
-		
+
 		// Only needs to update once
 		state = GameState.Ready;
 	}
@@ -393,18 +457,18 @@ public class GameScreen extends Screen {
 	@Override
 	public void paint(float deltaTime) {
 		Graphics g = game.getGraphics();
-		
+
 		// Clouds background
 		g.drawImage(Assets.backgroundImage2, background2.getBackgroundX(),
 				background2.getBackgroundY());
 
 		// Draw graph
 		drawXYGraph.draw(g);
-		
+
 		// Scoreboard background
 		g.drawImage(Assets.backgroundImage1, background1.getBackgroundX(),
 				background1.getBackgroundY());
-		
+
 		// Draw if home run
 		if(!drawXYGraph.getHitsWall()
 				&& (mathCalculator.getMaxDistance() >= drawXYGraph.getWallRectangle().left)) {
@@ -414,16 +478,13 @@ public class GameScreen extends Screen {
 		{
 			g.drawImage(Assets.homeRunSign, 42, 80);
 		}
-		
+
 
 		// Determines the state
 		if (state == GameState.Ready)
 		{
+		    // Draw the ready UI
 			drawReadyUI();
-		}
-		if (state == GameState.Calculating)
-		{
-			drawRunningUI();
 		}
 
 
@@ -437,6 +498,7 @@ public class GameScreen extends Screen {
 			backButton.draw(g, currentBackButtonSprite);
 		}
 
+		// If isExit is true
 		if(isExit)
 		{
 			g.drawImage(Assets.exitImage, 115, 250);
@@ -447,24 +509,18 @@ public class GameScreen extends Screen {
 	}
 
 
-	private void drawRunningUI() {
-		Graphics g = game.getGraphics();
-		
-		
-	}
-
 
 	private void drawReadyUI() {
 		Graphics g = game.getGraphics();
-		
+
 		// Draw all varibles of graph
 		drawStats.draw(g, debugFont);
-				
+
 		// Draw interface buttons
-		drawButtonInterface.draw(g, dragPosXInitialVelocity, 
+		drawButtonInterface.draw(g, dragPosXInitialVelocity,
 				dragPosXLaunchAngle, startingDragButtonPosition, dragVelocityConvert,
 				dragLaunchAngleConvert, debugFont);
-		
+
 	}
 
 
@@ -486,21 +542,25 @@ public class GameScreen extends Screen {
 
 	@Override
 	public void backButton() {
-		// Are you sure you want to quit?
-
-	//	android.os.Process.killProcess(android.os.Process.myPid());
+    //	android.os.Process.killProcess(android.os.Process.myPid());
 		isExit = true;
 	}
-	
+
+	// Sets off garbage collecter to clean up memory
 	private void nullify() {
-		// Call garbage collector to clean up memory.
 		System.gc();
 	}
 
+    // Gets the background1
 	public static Background getBackground1() {
 		return background1;
 	}
-	
+
+	// Gets the background2
+	public static Background getBackground2() {
+		return background2;
+	}
+
 
 
 }

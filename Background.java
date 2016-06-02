@@ -1,69 +1,79 @@
 package com.dorf.skeleton;
 
 
-/*
-	For a moving background!
-	It is used for moving clouds.
- */
+ /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	- Class for moving the background.
+	- It is used for displaying moving clouds.
+
+	  Code by Jordan Marx (2014)
+*/
 
 public class Background {
 
+    // The y position of the background
 	private int backgroundY;
-	private double backgroundX, speedX;
-	private int keepTrackX, width, height, backgroundDistance;
 
-	// w and h are the images width and height
+	// The x position of the background
+	private int backgroundX;
+
+	// The horizontal speed of the background
+	private double speedX;
+
+	// The width, height of the background image
+	private int width, height;
+
+    // Constructor
 	public Background(int x, int y, double initialSpeed, int w, int h) {
+
+	    // Store the variables
 		backgroundX = x;
 		backgroundY = y;
 		speedX = initialSpeed;
-		keepTrackX = x;
 		width = w;
 		height = h;
-		backgroundDistance = 0;
 	}
 
 	// Update
 	public void update() {
-		backgroundX += speedX;
-		keepTrackX += speedX;
-		backgroundDistance -= speedX;
 
+	    // Add the speed to the background position
+		backgroundX += speedX;
+
+        // Resets the background image to start over
 		if(backgroundX <= -width)
 		{
 			backgroundX = 0;
 		}
 	}
 
+    // Gets the backgroundX
 	public int getBackgroundX() {
 		return (int)backgroundX;
 	}
 
+    // Gets the backgroundY
 	public int getBackgroundY() {
 		return backgroundY;
 	}
 
-	public int getBackgroundDistance() {
-		return backgroundDistance;
-	}
-
-	public int clamp() {
-		return keepTrackX;
-	}
-
+    // Gets the horizontal speed of the background
 	public double getSpeedX() {
 		return speedX;
 	}
 
+	// Sets the horizontal speed of the background
+	public void setSpeedX(int speedX) {
+		this.speedX = speedX;
+	}
+
+    // Sets the backgroundX
 	public void setBackgroundX(int backgroundX) {
 		this.backgroundX = backgroundX;
 	}
 
+    // Sets the backgroundY
 	public void setBackgroundY(int backgroundY) {
 		this.backgroundY = backgroundY;
 	}
 
-	public void setSpeedX(int speedX) {
-		this.speedX = speedX;
-	}
 }
